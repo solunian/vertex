@@ -1,0 +1,5 @@
+{
+  "name": "Nexus Graph",
+  "description": "A dynamic social and professional relationship visualization tool with force-directed physics and path discovery.",
+  "requestFramePermissions": []
+}
