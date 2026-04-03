@@ -1,14 +1,14 @@
 <script lang="ts">
   import Plus from "@lucide/svelte/icons/plus";
   import Search from "@lucide/svelte/icons/search";
-  import Network from "@lucide/svelte/icons/network";
+  import GitCompare from "@lucide/svelte/icons/git-compare";
   import Info from "@lucide/svelte/icons/info";
   import X from "@lucide/svelte/icons/x";
   import ArrowRight from "@lucide/svelte/icons/arrow-right";
   import Trash2 from "@lucide/svelte/icons/trash-2";
   import Undo2 from "@lucide/svelte/icons/undo-2";
   import Redo2 from "@lucide/svelte/icons/redo-2";
-  import RotateCcw from "@lucide/svelte/icons/rotate-ccw";
+  import Locate from "@lucide/svelte/icons/locate";
   import Download from "@lucide/svelte/icons/download";
   import Pin from "@lucide/svelte/icons/pin";
   import PinOff from "@lucide/svelte/icons/pin-off";
@@ -201,7 +201,7 @@
     <div class="space-y-1 border-b border-slate-200 p-6">
       <div class="flex items-center gap-4">
         <div class="rounded-lg bg-violet-600 p-2">
-          <Network class="size-5 text-white" />
+          <GitCompare class="size-5 text-white" />
         </div>
         <h1 class="font-mono text-3xl font-bold text-slate-900">Vertex</h1>
       </div>
@@ -540,7 +540,7 @@
         onclick={() => (reset_zoom_counter += 1)}
         class="group rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition-all hover:bg-slate-50"
         title="Reset Zoom">
-        <RotateCcw class="h-5 w-5 text-slate-600 transition-transform group-active:scale-90" />
+        <Locate class="h-5 w-5 text-slate-600 transition-transform group-active:scale-90" />
       </button>
       <button
         onclick={() => (export_trigger += 1)}

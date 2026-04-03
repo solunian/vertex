@@ -32,6 +32,6 @@
   @reference "../../app.css";
 
   h6 {
-    @apply text-base font-bold text-slate-400;
+    @apply text-base font-bold text-slate-700;
   }
 </style>
