@@ -301,8 +301,8 @@
 
         {#if highlighted_paths.length > 0}
           <div class="mt-2 rounded-lg border border-emerald-100 bg-emerald-50 p-3">
-            <p class="text-xs font-medium text-emerald-700">
-              Shortest path found! ({highlighted_paths[0].length - 1} steps, total weight: {highlighted_paths[0].reduce(
+            <p class="text-sm font-medium text-emerald-700">
+              Shortest path found! <br />steps: {highlighted_paths[0].length - 1}, total weight: {highlighted_paths[0].reduce(
                 (acc, curr, idx, arr) => {
                   if (idx === 0) return 0;
                   const prev = arr[idx - 1];
@@ -314,7 +314,7 @@
                   return acc + (edge?.weight ?? 5);
                 },
                 0
-              )})
+              )}
             </p>
           </div>
         {/if}
@@ -552,14 +552,14 @@
     <GraphCanvas
       {nodes}
       {edges}
-      onNodeClick={handle_node_click}
-      onEdgeClick={handle_edge_click}
-      onNodePin={toggle_node_pin}
-      highlightedPaths={highlighted_paths}
-      selectedNodeId={selected_node?.id}
-      selectedEdge={selected_edge}
-      resetZoomTrigger={reset_zoom_counter}
-      exportTrigger={export_trigger} />
+      on_nodeclick={handle_node_click}
+      on_edgeclick={handle_edge_click}
+      on_nodepin={toggle_node_pin}
+      {highlighted_paths}
+      selected_nodeid={selected_node?.id}
+      {selected_edge}
+      reset_zoom_trigger={reset_zoom_counter}
+      bind:export_trigger />
 
     <Legend />
 

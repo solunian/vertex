@@ -8,38 +8,38 @@
   interface GraphCanvasProps {
     nodes: GraphNode[];
     edges: GraphEdge[];
-    onNodeClick: (node: GraphNode) => void;
-    onEdgeClick: (edge: GraphEdge) => void;
-    onNodePin: (id: string, forceValue?: boolean) => void;
-    highlightedPaths: string[][];
-    selectedNodeId?: string;
-    selectedEdge?: GraphEdge | null;
-    resetZoomTrigger?: number;
-    exportTrigger?: number;
+    on_nodeclick: (node: GraphNode) => void;
+    on_edgeclick: (edge: GraphEdge) => void;
+    on_nodepin: (id: string, forceValue?: boolean) => void;
+    highlighted_paths: string[][];
+    selected_nodeid?: string;
+    selected_edge?: GraphEdge | null;
+    reset_zoom_trigger?: number;
+    export_trigger?: number;
   }
 
   let {
     nodes,
     edges,
-    onNodeClick,
-    onEdgeClick,
-    onNodePin,
-    highlightedPaths,
-    selectedNodeId,
-    selectedEdge,
-    resetZoomTrigger,
-    exportTrigger,
+    on_nodeclick,
+    on_edgeclick,
+    on_nodepin,
+    highlighted_paths,
+    selected_nodeid,
+    selected_edge,
+    reset_zoom_trigger,
+    export_trigger = $bindable(),
   }: GraphCanvasProps = $props();
 
-  let canvasRef = $state<HTMLCanvasElement>();
-  let simulationRef = $state<d3.Simulation<GraphNode, undefined>>();
-  let zoomRef = $state<d3Zoom.ZoomBehavior<HTMLCanvasElement, unknown>>();
-  let transformRef = $state(d3Zoom.zoomIdentity);
+  let canvas_ref = $state<HTMLCanvasElement>();
+  let simulation_ref = $state<d3.Simulation<GraphNode, undefined>>();
+  let zoom_ref = $state<d3Zoom.ZoomBehavior<HTMLCanvasElement, unknown>>();
+  let transform_ref = $state(d3Zoom.zoomIdentity);
   let dimensions = $state({ width: 0, height: 0 });
   let transform = $state(d3Zoom.zoomIdentity);
 
   // Helper to find node at coordinates
-  const findNodeAt = (x: number, y: number) => {
+  const find_node_at = (x: number, y: number) => {
     return nodes.find((n) => {
       if (!n.x || !n.y) return false;
       const dx = n.x - x;
@@ -49,7 +49,7 @@
   };
 
   // Helper to find edge at coordinates
-  const findEdgeAt = (x: number, y: number, k: number) => {
+  const find_edge_at = (x: number, y: number, k: number) => {
     return edges.find((edge) => {
       const sourceId = typeof edge.source === "string" ? edge.source : (edge.source as any).id;
       const targetId = typeof edge.target === "string" ? edge.target : (edge.target as any).id;
@@ -93,7 +93,7 @@
   };
 
   const render = () => {
-    const canvas = canvasRef;
+    const canvas = canvas_ref;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
@@ -111,7 +111,7 @@
 
     // Apply zoom transform
     ctx.save();
-    const t = transformRef;
+    const t = transform_ref;
     ctx.translate(t.x, t.y);
     ctx.scale(t.k, t.k);
 
@@ -119,13 +119,13 @@
     const gridSize = 40;
     ctx.fillStyle = "#cbd5e1"; // slate-300
     // Draw grid in a larger area to cover pan
-    const startX = Math.floor(-t.x / t.k / gridSize) * gridSize;
-    const startY = Math.floor(-t.y / t.k / gridSize) * gridSize;
-    const endX = startX + Math.ceil(dimensions.width / t.k) + gridSize * 2;
-    const endY = startY + Math.ceil(dimensions.height / t.k) + gridSize * 2;
+    const startx = Math.floor(-t.x / t.k / gridSize) * gridSize;
+    const starty = Math.floor(-t.y / t.k / gridSize) * gridSize;
+    const endx = startx + Math.ceil(dimensions.width / t.k) + gridSize * 2;
+    const endy = starty + Math.ceil(dimensions.height / t.k) + gridSize * 2;
 
-    for (let x = startX; x <= endX; x += gridSize) {
-      for (let y = startY; y <= endY; y += gridSize) {
+    for (let x = startx; x <= endx; x += gridSize) {
+      for (let y = starty; y <= endy; y += gridSize) {
         ctx.beginPath();
         ctx.arc(x, y, 1.2 / t.k, 0, 2 * Math.PI);
         ctx.fill();
@@ -135,54 +135,54 @@
     // Draw edges
     ctx.shadowBlur = 0;
     edges.forEach((edge) => {
-      const sourceId = typeof edge.source === "string" ? edge.source : (edge.source as any).id;
-      const targetId = typeof edge.target === "string" ? edge.target : (edge.target as any).id;
+      const src_id = typeof edge.source === "string" ? edge.source : (edge.source as any).id;
+      const target_id = typeof edge.target === "string" ? edge.target : (edge.target as any).id;
 
-      const source = nodes.find((n) => n.id === sourceId);
-      const target = nodes.find((n) => n.id === targetId);
+      const src = nodes.find((n) => n.id === src_id);
+      const target = nodes.find((n) => n.id === target_id);
 
-      if (source?.x && source?.y && target?.x && target?.y) {
-        const isHighlighted = highlightedPaths.some((path) => {
+      if (src?.x && src?.y && target?.x && target?.y) {
+        const is_highlighted = highlighted_paths.some((path) => {
           for (let i = 0; i < path.length - 1; i++) {
             if (
-              (path[i] === sourceId && path[i + 1] === targetId) ||
-              (path[i] === targetId && path[i + 1] === sourceId)
+              (path[i] === src_id && path[i + 1] === target_id) ||
+              (path[i] === target_id && path[i + 1] === src_id)
             )
               return true;
           }
           return false;
         });
 
-        const selS = selectedEdge
-          ? typeof selectedEdge.source === "string"
-            ? selectedEdge.source
-            : (selectedEdge.source as any).id
+        const selS = selected_edge
+          ? typeof selected_edge.source === "string"
+            ? selected_edge.source
+            : (selected_edge.source as any).id
           : null;
-        const selT = selectedEdge
-          ? typeof selectedEdge.target === "string"
-            ? selectedEdge.target
-            : (selectedEdge.target as any).id
+        const selT = selected_edge
+          ? typeof selected_edge.target === "string"
+            ? selected_edge.target
+            : (selected_edge.target as any).id
           : null;
-        const isSelected =
-          (selS === sourceId && selT === targetId) || (selS === targetId && selT === sourceId);
+        const is_selected =
+          (selS === src_id && selT === target_id) || (selS === target_id && selT === src_id);
 
         const weight = edge.weight ?? 5;
         // Thicker for more weight: weight 0 -> 1.5px, weight 9 -> 6px
-        const baseWidth = weight / 2 + 1.5;
+        const base_width = weight / 2 + 1.5;
 
         ctx.beginPath();
-        ctx.moveTo(source.x, source.y);
+        ctx.moveTo(src.x, src.y);
         ctx.lineTo(target.x, target.y);
 
-        if (isSelected) {
+        if (is_selected) {
           ctx.strokeStyle = "#f59e0b"; // amber-500
-          ctx.lineWidth = baseWidth + 2;
-        } else if (isHighlighted) {
+          ctx.lineWidth = base_width + 2;
+        } else if (is_highlighted) {
           ctx.strokeStyle = "#10b981"; // emerald-500
-          ctx.lineWidth = baseWidth + 1;
+          ctx.lineWidth = base_width + 1;
         } else {
           ctx.strokeStyle = "#e5e7eb"; // slate-200
-          ctx.lineWidth = baseWidth;
+          ctx.lineWidth = base_width;
         }
 
         ctx.stroke();
@@ -192,20 +192,20 @@
     // Draw nodes
     nodes.forEach((node) => {
       if (node.x && node.y) {
-        const isSelected = node.id === selectedNodeId;
+        const is_selected = node.id === selected_nodeid;
 
         // Shadow / Glow
-        ctx.shadowBlur = isSelected ? 30 : 8;
-        ctx.shadowColor = isSelected ? "rgba(245, 158, 11, 0.8)" : "rgba(0,0,0,0.1)";
+        ctx.shadowBlur = is_selected ? 30 : 8;
+        ctx.shadowColor = is_selected ? "rgba(245, 158, 11, 0.8)" : "rgba(0,0,0,0.1)";
 
         // Circle
         ctx.beginPath();
         ctx.arc(node.x, node.y, 30, 0, 2 * Math.PI); // Increased radius to 30
-        ctx.fillStyle = isSelected ? "#f59e0b" : "#ffffff";
+        ctx.fillStyle = is_selected ? "#f59e0b" : "#ffffff";
         ctx.fill();
 
-        ctx.strokeStyle = isSelected ? "#d97706" : "#d1d5db";
-        ctx.lineWidth = isSelected ? 5 : 2;
+        ctx.strokeStyle = is_selected ? "#d97706" : "#d1d5db";
+        ctx.lineWidth = is_selected ? 5 : 2;
         ctx.stroke();
 
         // Pin indicator
@@ -226,7 +226,7 @@
         ctx.clip();
 
         ctx.shadowBlur = 0;
-        ctx.fillStyle = isSelected ? "#ffffff" : "#1f2937";
+        ctx.fillStyle = is_selected ? "#ffffff" : "#1f2937";
         ctx.font = "bold 12px Nova Round"; // Slightly larger font
         ctx.textAlign = "center";
         ctx.fillText(node.name, node.x, node.y + 4);
@@ -248,14 +248,14 @@
 
   // Initialize zoom and drag
   $effect(() => {
-    const canvas = canvasRef;
+    const canvas = canvas_ref;
     if (!canvas) return;
 
     const zoom = d3Zoom
       .zoom<HTMLCanvasElement, unknown>()
       .scaleExtent([0.5, 2])
       .on("zoom", (event) => {
-        transformRef = event.transform;
+        transform_ref = event.transform;
         transform = event.transform;
       })
       .filter((event) => {
@@ -264,12 +264,12 @@
 
         if (event.type === "mousedown" || event.type === "touchstart") {
           const [mx, my] = pointer(event, canvas);
-          const t = transformRef;
+          const t = transform_ref;
           const x = (mx - t.x) / t.k;
           const y = (my - t.y) / t.k;
 
-          if (findNodeAt(x, y)) return false;
-          if (findEdgeAt(x, y, t.k)) return false;
+          if (find_node_at(x, y)) return false;
+          if (find_edge_at(x, y, t.k)) return false;
         }
         return true;
       });
@@ -277,32 +277,32 @@
     const drag = d3Drag
       .drag<HTMLCanvasElement, unknown>()
       .subject((event) => {
-        const t = transformRef;
+        const t = transform_ref;
         const x = (event.x - t.x) / t.k;
         const y = (event.y - t.y) / t.k;
-        return findNodeAt(x, y);
+        return find_node_at(x, y);
       })
       .on("start", (event) => {
         if (!event.subject) return;
-        onNodeClick(event.subject);
-        if (!simulationRef) return;
-        simulationRef.alphaTarget(0.3).restart();
+        on_nodeclick(event.subject);
+        if (!simulation_ref) return;
+        simulation_ref.alphaTarget(0.3).restart();
         event.subject.fx = event.subject.x;
         event.subject.fy = event.subject.y;
       })
       .on("drag", (event) => {
         if (!event.subject) return;
-        const canvas = canvasRef;
+        const canvas = canvas_ref;
         if (!canvas) return;
         const [mx, my] = pointer(event, canvas);
-        const t = transformRef;
+        const t = transform_ref;
         event.subject.fx = (mx - t.x) / t.k;
         event.subject.fy = (my - t.y) / t.k;
       })
       .on("end", (event) => {
         if (!event.subject) return;
-        if (!simulationRef) return;
-        simulationRef.alphaTarget(0);
+        if (!simulation_ref) return;
+        simulation_ref.alphaTarget(0);
 
         // Only keep fixed position if it was already pinned
         if (!event.subject.pinned) {
@@ -314,7 +314,7 @@
         }
       });
 
-    zoomRef = zoom;
+    zoom_ref = zoom;
     const selection = select(canvas);
     selection.call(zoom).call(drag);
 
@@ -323,29 +323,29 @@
       if (event.defaultPrevented) return;
 
       const [mx, my] = pointer(event, canvas);
-      const t = transformRef;
+      const t = transform_ref;
       const x = (mx - t.x) / t.k;
       const y = (my - t.y) / t.k;
 
-      const node = findNodeAt(x, y);
+      const node = find_node_at(x, y);
       if (node) {
-        onNodeClick(node);
+        on_nodeclick(node);
       } else {
-        const edge = findEdgeAt(x, y, t.k);
-        if (edge) onEdgeClick(edge);
+        const edge = find_edge_at(x, y, t.k);
+        if (edge) on_edgeclick(edge);
       }
     });
 
     selection.on("contextmenu", (event) => {
       event.preventDefault();
       const [mx, my] = pointer(event, canvas);
-      const t = transformRef;
+      const t = transform_ref;
       const x = (mx - t.x) / t.k;
       const y = (my - t.y) / t.k;
 
-      const node = findNodeAt(x, y);
+      const node = find_node_at(x, y);
       if (node) {
-        onNodePin(node.id);
+        on_nodeclick(node.id);
       }
     });
 
@@ -357,20 +357,21 @@
 
   // Handle reset zoom
   $effect(() => {
-    if (resetZoomTrigger && canvasRef && zoomRef) {
-      select(canvasRef).transition().duration(750).call(zoomRef.transform, d3Zoom.zoomIdentity);
+    if (reset_zoom_trigger && canvas_ref && zoom_ref) {
+      select(canvas_ref).transition().duration(750).call(zoom_ref.transform, d3Zoom.zoomIdentity);
     }
   });
 
   // Handle Export PNG
   $effect(() => {
-    if (exportTrigger && canvasRef) {
-      const canvas = canvasRef;
+    if (export_trigger && export_trigger > 0 && canvas_ref) {
+      const canvas = canvas_ref;
       render();
       const link = document.createElement("a");
-      link.download = `nexus-graph-${new Date().getTime()}.png`;
+      link.download = `vertex-${new Date().getTime()}.png`;
       link.href = canvas.toDataURL("image/png");
       link.click();
+      export_trigger -= 1;
     }
   });
 
@@ -378,8 +379,8 @@
   $effect(() => {
     if (dimensions.width === 0 || dimensions.height === 0) return;
 
-    if (!simulationRef) {
-      simulationRef = d3
+    if (!simulation_ref) {
+      simulation_ref = d3
         .forceSimulation<GraphNode>(nodes)
         .force(
           "link",
@@ -391,8 +392,8 @@
         .force("charge", d3.forceManyBody().strength(-800)) // Stronger repulsion for larger nodes
         .force("collision", d3.forceCollide().radius(60)); // Increased collision radius
     } else {
-      simulationRef.nodes(nodes);
-      const linkForce = simulationRef.force("link") as d3.ForceLink<GraphNode, any>;
+      simulation_ref.nodes(nodes);
+      const linkForce = simulation_ref.force("link") as d3.ForceLink<GraphNode, any>;
       linkForce.links(edges);
     }
 
@@ -407,21 +408,21 @@
       }
     });
 
-    simulationRef
+    simulation_ref
       .force("x", d3.forceX(dimensions.width / 2).strength(0.1))
       .force("y", d3.forceY(dimensions.height / 2).strength(0.1));
 
-    simulationRef.on("tick", render);
-    simulationRef.alpha(0.3).restart(); // this made the graph rotate and bug out
+    simulation_ref.on("tick", render);
+    simulation_ref.alpha(0.3).restart(); // this made the graph rotate and bug out
 
     return () => {
-      simulationRef?.on("tick", null);
+      simulation_ref?.on("tick", null);
     };
   });
 
   // Handle resize and container changes
   $effect(() => {
-    const canvas = canvasRef;
+    const canvas = canvas_ref;
     if (!canvas || !canvas.parentElement) return;
 
     const parent = canvas.parentElement;
@@ -451,4 +452,4 @@
   });
 </script>
 
-<canvas bind:this={canvasRef} class="cursor-grab active:cursor-grabbing"></canvas>
+<canvas bind:this={canvas_ref} class="cursor-grab active:cursor-grabbing"></canvas>
