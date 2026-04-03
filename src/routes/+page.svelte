@@ -197,7 +197,7 @@
 
 <div class="relative flex h-screen w-full overflow-hidden font-sans">
   <!-- Sidebar -->
-  <div class="z-20 flex h-full w-80 shrink-0 flex-col gap-4 border-r border-slate-200 shadow-sm">
+  <div class="z-20 flex h-full w-80 shrink-0 flex-col border-r border-slate-200 shadow-sm">
     <div class="space-y-1 border-b border-slate-200 p-6">
       <div class="flex items-center gap-4">
         <div class="rounded-lg bg-violet-600 p-2">
@@ -207,7 +207,7 @@
       </div>
     </div>
 
-    <div class="flex-1 space-y-6 overflow-y-auto px-4">
+    <div class="flex-1 space-y-6 overflow-y-auto p-4">
       <!-- Search Section -->
       <section class="space-y-3">
         <h2 class="flex items-center gap-2 text-slate-800">
@@ -216,7 +216,7 @@
         <div class="relative">
           <input
             type="text"
-            value={search_query}
+            bind:value={search_query}
             onchange={(e) => (search_query = e.currentTarget.value)}
             placeholder="Search by name or ID..."
             class="w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-sm transition-all outline-none focus:ring-2 focus:ring-violet-500" />
@@ -224,34 +224,33 @@
             <button
               onclick={() => (search_query = "")}
               class="absolute top-1/2 right-2.5 -translate-y-1/2 text-slate-400 hover:text-slate-600">
-              <X class="h-4 w-4" />
+              <X class="size-4 transition hover:text-violet-500" />
             </button>
           {/if}
         </div>
 
         {#if search_results.length > 0}
           <div
-            class="mt-2 max-h-40 divide-y divide-slate-50 overflow-y-auto rounded-lg border border-slate-100 shadow-sm">
+            class="mt-2 max-h-40 divide-y divide-slate-100 overflow-y-auto rounded-lg border border-slate-200 shadow">
             {#each search_results as n}
               <button
                 onclick={() => {
                   handle_node_click(n);
                   search_query = "";
                 }}
-                class="group flex w-full items-center justify-between p-2.5 text-left text-sm transition-colors hover:bg-slate-50">
+                class="group flex w-full items-center justify-between p-2.5 text-left text-sm transition hover:bg-slate-100">
                 <div class="flex flex-col">
                   <span class="font-medium text-slate-700">{n.name}</span>
-                  <span class="font-mono text-[10px] text-slate-400">ID: {n.id}</span>
+                  <span class="font-mono text-sm text-slate-400">ID:{n.id}</span>
                 </div>
-                <ArrowRight
-                  class="h-3 w-3 text-slate-300 transition-colors group-hover:text-violet-500" />
+                <ArrowRight class="size-4 text-slate-300 transition group-hover:text-violet-500" />
               </button>
             {/each}
           </div>
         {/if}
 
         {#if search_query && search_results.length === 0}
-          <p class="px-1 text-[10px] text-slate-400 italic">No matches found</p>
+          <p class="px-1 text-slate-400 italic">No matches found</p>
         {/if}
       </section>
 
@@ -426,7 +425,7 @@
         <section class="space-y-4 rounded-xl bg-slate-900 p-4 text-white shadow-lg">
           <div class="flex items-start justify-between">
             <div>
-              <p class="text-[10px] text-slate-400 uppercase">Relationship</p>
+              <p class="text-sm text-slate-400 uppercase">Relationship</p>
               <h3 class="text-sm">
                 {nodes.find(
                   (n) =>
@@ -457,7 +456,7 @@
                 <span class="rounded bg-amber-500/10 px-2 py-0.5 text-xs font-bold text-amber-500">
                   {selected_edge.weight ?? 5}
                 </span>
-                <span class="font-mono text-[10px] text-slate-500">
+                <span class="font-mono text-sm text-slate-500">
                   ({(selected_edge.weight ?? 5) < 3
                     ? "Thin"
                     : (selected_edge.weight ?? 5) > 6
@@ -474,7 +473,7 @@
               value={selected_edge.weight ?? 5}
               onchange={(e) => handle_update_edge_weight(parseInt(e.currentTarget.value))}
               class="h-1.5 w-full cursor-pointer appearance-none rounded-lg bg-slate-700 accent-amber-500" />
-            <div class="flex justify-between text-[10px] text-slate-500 uppercase">
+            <div class="flex justify-between text-sm text-slate-500 uppercase">
               <span>Thin</span>
               <span>Thick</span>
             </div>
