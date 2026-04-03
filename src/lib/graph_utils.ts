@@ -3,7 +3,7 @@ import type { GraphNode, GraphEdge } from "./graph_types";
 /**
  * Finds the shortest path between two nodes using Dijkstra's algorithm
  */
-export function findShortestPath(
+export function find_shortest_path(
   nodes: GraphNode[],
   edges: GraphEdge[],
   startId: string,
@@ -37,26 +37,26 @@ export function findShortestPath(
 
   while (nodes_set.size > 0) {
     // Find node with smallest distance
-    let closestNode: string | null = null;
+    let closest_node: string | null = null;
     for (const nodeId of nodes_set) {
-      if (closestNode === null || distances[nodeId] < distances[closestNode]) {
-        closestNode = nodeId;
+      if (closest_node === null || distances[nodeId] < distances[closest_node]) {
+        closest_node = nodeId;
       }
     }
 
-    if (closestNode === null || distances[closestNode] === Infinity) break;
-    if (closestNode === endId) break;
+    if (closest_node === null || distances[closest_node] === Infinity) break;
+    if (closest_node === endId) break;
 
-    nodes_set.delete(closestNode);
+    nodes_set.delete(closest_node);
 
-    const neighbors = adjacency[closestNode] || [];
+    const neighbors = adjacency[closest_node] || [];
     for (const neighbor of neighbors) {
       if (!nodes_set.has(neighbor.node)) continue;
 
-      const alt = distances[closestNode] + neighbor.weight;
+      const alt = distances[closest_node] + neighbor.weight;
       if (alt < distances[neighbor.node]) {
         distances[neighbor.node] = alt;
-        previous[neighbor.node] = closestNode;
+        previous[neighbor.node] = closest_node;
       }
     }
   }
