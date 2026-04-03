@@ -219,7 +219,7 @@
             bind:value={search_query}
             onchange={(e) => (search_query = e.currentTarget.value)}
             placeholder="Search by name or ID..."
-            class="w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-sm transition-all outline-none focus:ring-2 focus:ring-violet-500" />
+            class="w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-sm transition outline-none focus:ring-2 focus:ring-violet-500" />
           {#if search_query}
             <button
               onclick={() => (search_query = "")}
@@ -276,7 +276,7 @@
             <select
               value={path_start || ""}
               onchange={(e) => (path_start = e.currentTarget.value || null)}
-              class="w-full appearance-none rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-sm transition-all outline-none focus:ring-2 focus:ring-violet-500">
+              class="w-full appearance-none rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-sm transition outline-none focus:ring-2 focus:ring-violet-500">
               <option value="">Select Start Node...</option>
               {#each nodes as n}
                 <option value={n.id}>{n.name}</option>
@@ -290,7 +290,7 @@
             <select
               value={path_end || ""}
               onchange={(e) => (path_end = e.currentTarget.value || null)}
-              class="w-full appearance-none rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-sm transition-all outline-none focus:ring-2 focus:ring-violet-500">
+              class="w-full appearance-none rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-sm transition outline-none focus:ring-2 focus:ring-violet-500">
               <option value="">Select End Node...</option>
               {#each nodes as n}
                 <option value={n.id}>{n.name}</option>
@@ -336,24 +336,26 @@
           </div>
 
           <div class="space-y-2 text-sm">
-            <p class="**:text-slate-400">Quick Actions</p>
+            <p class="**:text-slate-400">Actions</p>
             <div class="grid grid-cols-2 gap-2">
               <button
                 onclick={() => toggle_node_pin(selected_node.id)}
                 class={[
-                  "flex items-center justify-center gap-2 rounded-lg p-2 transition-colors",
+                  "flex items-center justify-center gap-2 rounded-lg p-2 transition",
                   selected_node.pinned
                     ? "bg-amber-500/20 text-amber-400 hover:bg-amber-500/30"
                     : "bg-white/10 text-white hover:bg-white/20",
                 ]}>
-                {#if selected_node.pinned}<PinOff class="h-3 w-3" />{:else}
-                  <Pin class="size-3" />{/if}
-                {selected_node.pinned ? "Unpin" : "Pin"}
+                {#if selected_node.pinned}
+                  Unpin <PinOff class="size-3 stroke-3" />
+                {:else}
+                  Pin <Pin class="size-3 stroke-3" />
+                {/if}
               </button>
               <button
                 onclick={() => delete_node(selected_node.id)}
-                class="flex items-center justify-center gap-2 rounded-lg bg-red-500/10 p-2 text-red-400 transition-colors hover:bg-red-500/20">
-                <Trash2 class="size-3" /> Delete
+                class="flex items-center justify-center gap-2 rounded-lg bg-red-500/10 p-2 text-red-400 transition hover:bg-red-500/20">
+                Delete <Trash2 class="size-3 stroke-3" />
               </button>
             </div>
           </div>
@@ -404,16 +406,16 @@
                       }
                     }}
                     class={[
-                      "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-medium transition-all",
+                      "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition",
                       isConnected
                         ? "border-violet-500/30 bg-violet-500/20 text-violet-300 hover:bg-violet-500/30"
                         : "border-white/10 bg-white/5 text-slate-300 hover:border-white/20 hover:bg-white/10",
                     ]}>
                     {n.name}
                     {#if isConnected}
-                      <X class="h-3 w-3" />
+                      <X class="size-3" />
                     {:else}
-                      <Plus class="h-3 w-3 opacity-50" />
+                      <Plus class="size-3" />
                     {/if}
                   </button>
                 {/each}
@@ -485,7 +487,7 @@
               edges = edges.filter((e) => e !== selected_edge);
               selected_edge = null;
             }}
-            class="flex w-full items-center justify-center gap-2 rounded-lg bg-red-500/10 p-2 text-red-400 transition-colors hover:bg-red-500/20">
+            class="flex w-full items-center justify-center gap-2 rounded-lg bg-red-500/10 p-2 text-red-400 transition hover:bg-red-500/20">
             <Trash2 class="h-3 w-3" />
             Remove Link
           </button>
@@ -510,7 +512,7 @@
     <div class="border-t border-slate-100 p-4">
       <button
         onclick={() => (show_add_node = true)}
-        class="flex w-full items-center justify-center gap-2 rounded-xl bg-violet-600 p-3 text-white shadow-md shadow-violet-200 transition-all hover:bg-violet-700 active:scale-95">
+        class="flex w-full items-center justify-center gap-2 rounded-xl bg-violet-600 p-3 text-white shadow-md shadow-violet-200 transition hover:bg-violet-700 active:scale-95">
         <Plus class="h-4 w-4" /> Add New Node
       </button>
     </div>
@@ -523,29 +525,29 @@
       <button
         onclick={undo}
         disabled={history.length === 0}
-        class="group rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition-all hover:bg-slate-50 disabled:opacity-30 disabled:hover:bg-white"
+        class="group rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition hover:bg-slate-50 disabled:opacity-30 disabled:hover:bg-white"
         title="Undo">
-        <Undo2 class="h-5 w-5 text-slate-600 transition-transform group-active:scale-90" />
+        <Undo2 class="h-5 w-5 text-slate-600 transition group-active:scale-90" />
       </button>
       <button
         onclick={redo}
         disabled={redo_stack.length === 0}
-        class="group rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition-all hover:bg-slate-50 disabled:opacity-30 disabled:hover:bg-white"
+        class="group rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition hover:bg-slate-50 disabled:opacity-30 disabled:hover:bg-white"
         title="Redo">
-        <Redo2 class="h-5 w-5 text-slate-600 transition-transform group-active:scale-90" />
+        <Redo2 class="h-5 w-5 text-slate-600 transition group-active:scale-90" />
       </button>
       <div class="mx-1 h-10 w-px bg-slate-200"></div>
       <button
         onclick={() => (reset_zoom_counter += 1)}
-        class="group rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition-all hover:bg-slate-50"
+        class="group rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition hover:bg-slate-50"
         title="Reset Zoom">
-        <Locate class="h-5 w-5 text-slate-600 transition-transform group-active:scale-90" />
+        <Locate class="h-5 w-5 text-slate-600 transition group-active:scale-90" />
       </button>
       <button
         onclick={() => (export_trigger += 1)}
-        class="group rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition-all hover:bg-slate-50"
+        class="group rounded-xl border border-slate-200 bg-white p-3 shadow-sm transition hover:bg-slate-50"
         title="Export PNG">
-        <Download class="h-5 w-5 text-slate-600 transition-transform group-active:scale-90" />
+        <Download class="h-5 w-5 text-slate-600 transition group-active:scale-90" />
       </button>
     </div>
 
@@ -575,7 +577,7 @@
             <h2 class="text-2xl text-slate-900">Add Node</h2>
             <button
               onclick={() => (show_add_node = false)}
-              class="rounded-full p-2 transition-colors hover:bg-slate-100">
+              class="rounded-full p-2 transition hover:bg-slate-100">
               <X class="h-5 w-5 text-slate-400" />
             </button>
           </div>
@@ -594,14 +596,14 @@
                   }
                 }}
                 placeholder="e.g. John Doe"
-                class="w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 font-medium transition-all outline-none focus:ring-2 focus:ring-violet-500" />
+                class="w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 font-medium transition outline-none focus:ring-2 focus:ring-violet-500" />
             </div>
           </div>
 
           <button
             onclick={handle_add_node}
             disabled={!new_node_name.trim()}
-            class="w-full rounded-2xl bg-violet-600 p-4 text-white shadow-lg shadow-violet-100 transition-all hover:bg-violet-700 active:scale-95 disabled:opacity-50 disabled:hover:bg-violet-600">
+            class="w-full rounded-2xl bg-violet-600 p-4 text-white shadow-lg shadow-violet-100 transition hover:bg-violet-700 active:scale-95 disabled:opacity-50 disabled:hover:bg-violet-600">
             Create Node
           </button>
         </div>

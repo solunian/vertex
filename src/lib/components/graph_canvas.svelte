@@ -345,7 +345,7 @@
 
       const node = find_node_at(x, y);
       if (node) {
-        on_nodeclick(node.id);
+        on_nodepin(node.id);
       }
     });
 
@@ -370,8 +370,10 @@
       const link = document.createElement("a");
       link.download = `vertex-${new Date().getTime()}.png`;
       link.href = canvas.toDataURL("image/png");
-      link.click();
-      export_trigger -= 1;
+      while (export_trigger > 0) {
+        link.click();
+        export_trigger -= 1;
+      }
     }
   });
 
