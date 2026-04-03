@@ -3,7 +3,6 @@
   import * as d3Zoom from "d3-zoom";
   import * as d3Drag from "d3-drag";
   import { select, pointer } from "d3-selection";
-  import "d3-transition";
   import type { GraphNode, GraphEdge } from "../graph_types";
 
   interface GraphCanvasProps {
@@ -228,7 +227,7 @@
 
         ctx.shadowBlur = 0;
         ctx.fillStyle = isSelected ? "#ffffff" : "#1f2937";
-        ctx.font = "bold 12px Inter"; // Slightly larger font
+        ctx.font = "bold 12px Nova Round"; // Slightly larger font
         ctx.textAlign = "center";
         ctx.fillText(node.name, node.x, node.y + 4);
         ctx.restore();
@@ -241,8 +240,9 @@
 
   // Handle re-render when transform or other props change
   $effect(() => {
-    render;
     transform;
+    nodes;
+    edges;
     render();
   });
 
@@ -412,7 +412,7 @@
       .force("y", d3.forceY(dimensions.height / 2).strength(0.1));
 
     simulationRef.on("tick", render);
-    simulationRef.alpha(0.3).restart();
+    simulationRef.alpha(0.3).restart(); // this made the graph rotate and bug out
 
     return () => {
       simulationRef?.on("tick", null);

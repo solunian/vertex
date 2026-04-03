@@ -195,26 +195,23 @@
 
 <svelte:window on:keydown={handle_keydown} />
 
-<div class="relative flex h-screen w-full overflow-hidden bg-[#f8fafc] font-sans">
+<div class="relative flex h-screen w-full overflow-hidden font-sans">
   <!-- Sidebar -->
-  <div class="z-20 flex h-full w-80 shrink-0 flex-col border-r border-slate-200 bg-white shadow-sm">
-    <div class="border-bottom border-slate-100 p-6">
-      <div class="mb-2 flex items-center gap-3">
-        <div class="rounded-lg bg-indigo-600 p-2">
-          <Network class="h-5 w-5 text-white" />
+  <div class="z-20 flex h-full w-80 shrink-0 flex-col gap-4 border-r border-slate-200 shadow-sm">
+    <div class="space-y-1 border-b border-slate-200 p-6">
+      <div class="flex items-center gap-4">
+        <div class="rounded-lg bg-violet-600 p-2">
+          <Network class="size-5 text-white" />
         </div>
-        <h1 class="text-xl font-bold tracking-tight text-nowrap text-slate-900">Nexus Graph</h1>
+        <h1 class="font-mono text-3xl font-bold text-slate-900">Vertex</h1>
       </div>
-      <p class="text-xs font-semibold tracking-widest text-slate-500 uppercase">
-        Relationship Visualizer
-      </p>
     </div>
 
-    <div class="flex-1 space-y-6 overflow-y-auto p-4">
+    <div class="flex-1 space-y-6 overflow-y-auto px-4">
       <!-- Search Section -->
       <section class="space-y-3">
-        <h2 class="flex items-center gap-2 text-sm font-bold text-slate-800">
-          <Search class="h-4 w-4" /> Search Nodes
+        <h2 class="flex items-center gap-2 text-slate-800">
+          <Search class="size-4" />Search Nodes
         </h2>
         <div class="relative">
           <input
@@ -222,7 +219,7 @@
             value={search_query}
             onchange={(e) => (search_query = e.currentTarget.value)}
             placeholder="Search by name or ID..."
-            class="w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-sm transition-all outline-none focus:ring-2 focus:ring-indigo-500" />
+            class="w-full rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-sm transition-all outline-none focus:ring-2 focus:ring-violet-500" />
           {#if search_query}
             <button
               onclick={() => (search_query = "")}
@@ -247,7 +244,7 @@
                   <span class="font-mono text-[10px] text-slate-400">ID: {n.id}</span>
                 </div>
                 <ArrowRight
-                  class="h-3 w-3 text-slate-300 transition-colors group-hover:text-indigo-500" />
+                  class="h-3 w-3 text-slate-300 transition-colors group-hover:text-violet-500" />
               </button>
             {/each}
           </div>
@@ -261,8 +258,8 @@
       <!-- Path Discovery Section -->
       <section class="space-y-3">
         <div class="flex items-center justify-between">
-          <h2 class="flex items-center gap-2 text-sm font-bold text-slate-800">
-            <Search class="h-4 w-4" /> Path Discovery
+          <h2 class="flex items-center gap-2 text-slate-800">
+            <Search class="size-4" />Path Discovery
           </h2>
           {#if path_start || path_end}
             <button
@@ -270,7 +267,7 @@
                 path_start = null;
                 path_end = null;
               }}
-              class="text-[10px] font-bold tracking-tighter text-indigo-600 uppercase hover:underline">
+              class="text-sm text-violet-600 hover:underline">
               Clear
             </button>
           {/if}
@@ -280,7 +277,7 @@
             <select
               value={path_start || ""}
               onchange={(e) => (path_start = e.currentTarget.value || null)}
-              class="w-full appearance-none rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-sm transition-all outline-none focus:ring-2 focus:ring-indigo-500">
+              class="w-full appearance-none rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-sm transition-all outline-none focus:ring-2 focus:ring-violet-500">
               <option value="">Select Start Node...</option>
               {#each nodes as n}
                 <option value={n.id}>{n.name}</option>
@@ -294,7 +291,7 @@
             <select
               value={path_end || ""}
               onchange={(e) => (path_end = e.currentTarget.value || null)}
-              class="w-full appearance-none rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-sm transition-all outline-none focus:ring-2 focus:ring-indigo-500">
+              class="w-full appearance-none rounded-lg border border-slate-200 bg-slate-50 p-2.5 text-sm transition-all outline-none focus:ring-2 focus:ring-violet-500">
               <option value="">Select End Node...</option>
               {#each nodes as n}
                 <option value={n.id}>{n.name}</option>
@@ -329,35 +326,35 @@
         <section class="space-y-4 rounded-xl bg-slate-900 p-4 text-white shadow-lg">
           <div class="flex items-start justify-between">
             <div>
-              <p class="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
+              <p class="text-slate-400">
                 {selected_node.type}
               </p>
-              <h3 class="text-lg leading-tight font-bold">{selected_node.name}</h3>
+              <h3 class="text-lg">{selected_node.name}</h3>
             </div>
             <button onclick={() => (selected_node = null)} class="text-slate-400 hover:text-white">
               <X class="h-4 w-4" />
             </button>
           </div>
 
-          <div class="space-y-2">
-            <p class="text-xs text-slate-400">Quick Actions</p>
+          <div class="space-y-2 text-sm">
+            <p class="**:text-slate-400">Quick Actions</p>
             <div class="grid grid-cols-2 gap-2">
               <button
                 onclick={() => toggle_node_pin(selected_node.id)}
                 class={[
-                  "flex items-center justify-center gap-2 rounded-lg p-2 text-xs font-bold transition-colors",
+                  "flex items-center justify-center gap-2 rounded-lg p-2 transition-colors",
                   selected_node.pinned
                     ? "bg-amber-500/20 text-amber-400 hover:bg-amber-500/30"
                     : "bg-white/10 text-white hover:bg-white/20",
                 ]}>
                 {#if selected_node.pinned}<PinOff class="h-3 w-3" />{:else}
-                  <Pin class="h-3 w-3" />{/if}
+                  <Pin class="size-3" />{/if}
                 {selected_node.pinned ? "Unpin" : "Pin"}
               </button>
               <button
                 onclick={() => delete_node(selected_node.id)}
-                class="flex items-center justify-center gap-2 rounded-lg bg-red-500/10 p-2 text-xs font-bold text-red-400 transition-colors hover:bg-red-500/20">
-                <Trash2 class="h-3 w-3" /> Delete
+                class="flex items-center justify-center gap-2 rounded-lg bg-red-500/10 p-2 text-red-400 transition-colors hover:bg-red-500/20">
+                <Trash2 class="size-3" /> Delete
               </button>
             </div>
           </div>
@@ -410,7 +407,7 @@
                     class={[
                       "flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[11px] font-medium transition-all",
                       isConnected
-                        ? "border-indigo-500/30 bg-indigo-500/20 text-indigo-300 hover:bg-indigo-500/30"
+                        ? "border-violet-500/30 bg-violet-500/20 text-violet-300 hover:bg-violet-500/30"
                         : "border-white/10 bg-white/5 text-slate-300 hover:border-white/20 hover:bg-white/10",
                     ]}>
                     {n.name}
@@ -429,10 +426,8 @@
         <section class="space-y-4 rounded-xl bg-slate-900 p-4 text-white shadow-lg">
           <div class="flex items-start justify-between">
             <div>
-              <p class="text-[10px] font-bold tracking-widest text-slate-400 uppercase">
-                Relationship
-              </p>
-              <h3 class="text-sm leading-tight font-bold">
+              <p class="text-[10px] text-slate-400 uppercase">Relationship</p>
+              <h3 class="text-sm">
                 {nodes.find(
                   (n) =>
                     n.id ===
@@ -479,8 +474,7 @@
               value={selected_edge.weight ?? 5}
               onchange={(e) => handle_update_edge_weight(parseInt(e.currentTarget.value))}
               class="h-1.5 w-full cursor-pointer appearance-none rounded-lg bg-slate-700 accent-amber-500" />
-            <div
-              class="flex justify-between text-[10px] font-bold tracking-tighter text-slate-500 uppercase">
+            <div class="flex justify-between text-[10px] text-slate-500 uppercase">
               <span>Thin</span>
               <span>Thick</span>
             </div>
@@ -492,22 +486,21 @@
               edges = edges.filter((e) => e !== selected_edge);
               selected_edge = null;
             }}
-            class="flex w-full items-center justify-center gap-2 rounded-lg bg-red-500/10 p-2 text-xs font-bold text-red-400 transition-colors hover:bg-red-500/20">
-            <Trash2 class="h-3 w-3" /> Remove Link
+            class="flex w-full items-center justify-center gap-2 rounded-lg bg-red-500/10 p-2 text-red-400 transition-colors hover:bg-red-500/20">
+            <Trash2 class="h-3 w-3" />
+            Remove Link
           </button>
         </section>
       {:else}
         <section
           class="flex flex-col items-center justify-center space-y-3 rounded-xl border-2 border-dashed border-slate-200 p-6 text-center">
-          <div class="rounded-full bg-slate-50 p-3">
-            <div class="rounded-full bg-slate-50 p-3">
-              <Info class="h-6 w-6 text-slate-400" />
-            </div>
+          <div class="rounded-full bg-slate-50 p-6">
+            <Info class="h-6 w-6 text-slate-400" />
           </div>
-          <div>
-            <h3 class="text-sm font-bold text-slate-800">No Selection</h3>
-            <p class="mt-1 text-xs text-slate-500">
-              Click a node or a link on the graph to view details or edit properties.
+          <div class="space-y-1">
+            <h3 class="text-slate-800">No Selection</h3>
+            <p class="text-xs text-slate-500">
+              Click a node or an edge on the graph to view details or edit properties.
             </p>
           </div>
         </section>
@@ -518,7 +511,7 @@
     <div class="border-t border-slate-100 p-4">
       <button
         onclick={() => (show_add_node = true)}
-        class="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 p-3 text-sm font-bold text-white shadow-md shadow-indigo-200 transition-all hover:bg-indigo-700 active:scale-95">
+        class="flex w-full items-center justify-center gap-2 rounded-xl bg-violet-600 p-3 text-white shadow-md shadow-violet-200 transition-all hover:bg-violet-700 active:scale-95">
         <Plus class="h-4 w-4" /> Add New Node
       </button>
     </div>
@@ -580,7 +573,7 @@
         }}>
         <div class="w-96 space-y-6 rounded-3xl border border-white/20 bg-white p-8 shadow-2xl">
           <div class="flex items-center justify-between">
-            <h2 class="text-2xl font-bold text-slate-900">Add Node</h2>
+            <h2 class="text-2xl text-slate-900">Add Node</h2>
             <button
               onclick={() => (show_add_node = false)}
               class="rounded-full p-2 transition-colors hover:bg-slate-100">
@@ -590,7 +583,7 @@
 
           <div class="space-y-4">
             <div class="space-y-2">
-              <label class="text-xs font-bold tracking-wider text-slate-400 uppercase">Name</label>
+              <label class="text-xs text-slate-400 uppercase">Name</label>
               <input
                 autoFocus
                 type="text"
@@ -602,14 +595,14 @@
                   }
                 }}
                 placeholder="e.g. John Doe"
-                class="w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 font-medium transition-all outline-none focus:ring-2 focus:ring-indigo-500" />
+                class="w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 font-medium transition-all outline-none focus:ring-2 focus:ring-violet-500" />
             </div>
           </div>
 
           <button
             onclick={handle_add_node}
             disabled={!new_node_name.trim()}
-            class="w-full rounded-2xl bg-indigo-600 p-4 font-bold text-white shadow-lg shadow-indigo-100 transition-all hover:bg-indigo-700 active:scale-95 disabled:opacity-50 disabled:hover:bg-indigo-600">
+            class="w-full rounded-2xl bg-violet-600 p-4 text-white shadow-lg shadow-violet-100 transition-all hover:bg-violet-700 active:scale-95 disabled:opacity-50 disabled:hover:bg-violet-600">
             Create Node
           </button>
         </div>
